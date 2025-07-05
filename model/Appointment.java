@@ -17,4 +17,10 @@ public class Appointment {
     public Patient getPatient() { return patient; }
     public LocalDate getDate() { return date; }
     public LocalTime getTime() { return time; }
+
+    private static int idCounter = 0;
+    private final int id = ++idCounter;
+
+    public int getId() { return id; }
+
 }

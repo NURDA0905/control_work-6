@@ -36,10 +36,21 @@ public class CalendarHandler implements HttpHandler {
             List<Map<String, Object>> weekRow = new ArrayList<>();
             for (int d = 0; d < 7; d++) {
                 Map<String, Object> cell = new HashMap<>();
+
                 if (current.getMonth().equals(month.getMonth())) {
                     cell.put("date", current.toString());
-                    cell.put("patients", schedule.getOrDefault(current, List.of()));
+                    cell.put("dayNumber", current.getDayOfMonth()); // ← ДОБАВЬ ЭТО
+                    List<Map<String, Object>> patientsForDay = new ArrayList<>();
+                    for (Appointment a : schedule.getOrDefault(current, List.of())) {
+                        Map<String, Object> p = new HashMap<>();
+                        p.put("fullName", a.getPatient().getFullName());
+                        p.put("type", a.getPatient().getType());
+                        p.put("time", a.getTime().toString());
+                        patientsForDay.add(p);
+                    }
+                    cell.put("patients", patientsForDay);
                 }
+
                 cell.put("isToday", current.equals(LocalDate.now()));
                 weekRow.add(cell);
                 current = current.plusDays(1);
@@ -47,10 +58,11 @@ public class CalendarHandler implements HttpHandler {
             calendar.add(weekRow);
         }
 
+
         Map<String, Object> data = new HashMap<>();
         data.put("calendar", calendar);
         data.put("month", month.getMonth().name() + " " + month.getYear());
 
-        engine.render(exchange, "templates/calendar.ftl", data);
+        engine.render(exchange, "calendar.ftl", data);
     }
 }

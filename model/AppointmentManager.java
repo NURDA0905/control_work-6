@@ -25,4 +25,8 @@ public class AppointmentManager {
                 .filter(a -> a.getDate().equals(date))
                 .collect(Collectors.toList());
     }
+    public void removeById(int id) {
+        appointments.removeIf(a -> a.getId() == id);
+    }
+
 }
